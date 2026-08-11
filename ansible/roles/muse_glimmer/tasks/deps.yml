@@ -1,0 +1,22 @@
+---
+- name: Install packages with dnf
+  ansible.builtin.dnf:
+    name: "{{ ialocal_packages }}"
+    state: present
+  become: true
+
+- name: Install huggingface_hub CLI (user)
+  ansible.builtin.pip:
+    name: "huggingface_hub[cli]"
+    extra_args: --user -U
+    executable: pip3
+
+- name: Assert nvcc is available
+  ansible.builtin.command: nvcc --version
+  register: nvcc_ver
+  changed_when: false
+  failed_when: nvcc_ver.rc != 0
+
+- name: Show nvcc
+  ansible.builtin.debug:
+    var: nvcc_ver.stdout_lines

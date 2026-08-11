@@ -1,0 +1,6 @@
+{"label": "baseline/r1", "wall_s": 31.876, "completion_tokens": 128, "prompt_tokens": 73, "tok_s": 4.016, "content_preview": "", "reasoning_chars": 312}
+{"label": "baseline/r2", "wall_s": 31.967, "completion_tokens": 128, "prompt_tokens": 73, "tok_s": 4.004, "content_preview": "", "reasoning_chars": 347}
+{"label": "fit-only/r1", "wall_s": 30.01, "completion_tokens": 128, "prompt_tokens": 73, "tok_s": 4.265, "content_preview": "", "reasoning_chars": 336}
+{"label": "fit-only/r2", "wall_s": 29.948, "completion_tokens": 128, "prompt_tokens": 73, "tok_s": 4.274, "content_preview": "", "reasoning_chars": 343}
+{"label": "perf/r1", "wall_s": 29.512, "completion_tokens": 128, "prompt_tokens": 73, "tok_s": 4.337, "content_preview": "", "reasoning_chars": 330}
+{"label": "perf/r2", "wall_s": 18.644, "completion_tokens": 128, "prompt_tokens": 73, "tok_s": 6.866, "content_preview": "", "reasoning_chars": 307}

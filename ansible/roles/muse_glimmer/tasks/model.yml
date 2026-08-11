@@ -1,0 +1,9 @@
+---
+- name: Download Muse Glimmer GGUF
+  ansible.builtin.command:
+    cmd: "{{ ialocal_repo_root }}/scripts/download-model.sh"
+  environment:
+    IALOCAL_ENV_FILE: "{{ ialocal_repo_root }}/config/muse-glimmer.env"
+    PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+  register: model_dl
+  changed_when: "'download OK' in model_dl.stdout"

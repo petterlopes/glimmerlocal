@@ -1,0 +1,17 @@
+[Unit]
+Description=Muse Glimmer 30B (llama-server localhost) — PeritumCT glimmerlocal
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory={{ ialocal_repo_root }}
+EnvironmentFile=-{{ ialocal_repo_root }}/config/muse-glimmer.env
+ExecStart={{ ialocal_repo_root }}/scripts/start-server-fg.sh
+Restart=on-failure
+RestartSec=5
+LimitMEMLOCK=infinity
+OOMScoreAdjust=-200
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,48 @@
+---
+- name: Ensure config env exists
+  ansible.builtin.copy:
+    src: "{{ ialocal_repo_root }}/config/muse-glimmer.env.example"
+    dest: "{{ ialocal_repo_root }}/config/muse-glimmer.env"
+    force: false
+    mode: "0600"
+  tags: [config]
+
+- name: Ensure data directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ ialocal_data }}/tools"
+    - "{{ ialocal_data }}/models"
+    - "{{ ialocal_data }}/tools/muse-glimmer/logs"
+  tags: [dirs]
+
+- name: Install OS build dependencies
+  ansible.builtin.include_tasks: deps.yml
+  when: ialocal_install_deps | bool
+  tags: [deps]
+
+- name: Build llama.cpp CUDA
+  ansible.builtin.include_tasks: build.yml
+  when: ialocal_build_llama | bool
+  tags: [build]
+
+- name: Download and verify model
+  ansible.builtin.include_tasks: model.yml
+  when: ialocal_download_model | bool
+  tags: [model]
+
+- name: Install systemd user unit
+  ansible.builtin.include_tasks: service.yml
+  when: ialocal_install_systemd_user | bool
+  tags: [service]
+
+- name: Smoke test
+  ansible.builtin.command:
+    cmd: "{{ ialocal_repo_root }}/scripts/smoke-test.sh"
+  environment:
+    IALOCAL_ENV_FILE: "{{ ialocal_repo_root }}/config/muse-glimmer.env"
+  when: ialocal_run_smoke | bool
+  tags: [smoke]
+  changed_when: false

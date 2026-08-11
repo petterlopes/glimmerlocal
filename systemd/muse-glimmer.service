@@ -1,0 +1,20 @@
+[Unit]
+Description=Muse Glimmer 30B (llama-server localhost) — PeritumCT glimmerlocal
+Documentation=file:///run/media/petterlopes/SSD930/devsec/peritumct/glimmerlocal/docs/RUNBOOK.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/run/media/petterlopes/SSD930/devsec/peritumct/glimmerlocal
+EnvironmentFile=-/run/media/petterlopes/SSD930/devsec/peritumct/glimmerlocal/config/muse-glimmer.env
+ExecStart=/run/media/petterlopes/SSD930/devsec/peritumct/glimmerlocal/scripts/start-server-fg.sh
+Restart=on-failure
+RestartSec=5
+KillMode=mixed
+TimeoutStopSec=30
+LimitMEMLOCK=infinity
+OOMScoreAdjust=-200
+
+[Install]
+WantedBy=default.target

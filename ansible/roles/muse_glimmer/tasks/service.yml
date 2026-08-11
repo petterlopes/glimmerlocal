@@ -1,0 +1,21 @@
+---
+- name: Ensure systemd user dir
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/systemd/user"
+    state: directory
+    mode: "0755"
+
+- name: Install muse-glimmer user unit
+  ansible.builtin.template:
+    src: muse-glimmer.service.j2
+    dest: "{{ ansible_env.HOME }}/.config/systemd/user/muse-glimmer.service"
+    mode: "0644"
+  notify: Reload systemd user
+
+- name: Enable and start muse-glimmer
+  ansible.builtin.systemd:
+    name: muse-glimmer.service
+    enabled: true
+    state: started
+    scope: user
+    daemon_reload: true

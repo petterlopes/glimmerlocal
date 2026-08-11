@@ -1,0 +1,35 @@
+# Local secrets / env (never commit)
+config/muse-glimmer.env
+secrets/
+*.pem
+*.key
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Ansible
+ansible/.retry/
+*.retry
+
+# Runtime noise if someone points IALOCAL_DATA here by mistake
+tools/
+models/
+logs/
+*.gguf
+*.gguf.sha256
+
+# Local diagnostic dumps (keep selected-profile / intentional notes if needed)
+docs/perf-results/*.log
+docs/perf-results/diag-*.txt
+docs/perf-results/health-check.txt
+docs/perf-results/mcp-radar-check.txt
+docs/perf-results/rename-refs.txt
+docs/perf-results/last-diag-path.txt
+
+# Editor
+.idea/
+.vscode/
+*.swp
+.DS_Store

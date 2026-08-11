@@ -1,0 +1,100 @@
+# Pinned versions for reproducible Muse Glimmer local stack
+# Bump VERSION in repo root when changing these.
+
+project:
+  name: peritumct-glimmerlocal-muse-glimmer
+  version: "0.3.0"
+  validated_on: "2026-08-11"
+  selected_profile: perf-q3
+
+llama_cpp:
+  repo: https://github.com/ggml-org/llama.cpp.git
+  # Muse Glimmer arch requires build >= b10353; this commit was validated.
+  ref: 5d16e81dd9896355d36b363bbf786abaa8f6995f
+  ref_note: "5d16e81 convert : keep quantization scales for nemotron --mtp export (#26903)"
+  min_build: 10353
+  cmake:
+    build_type: Release
+    shared_libs: "OFF"
+    cuda: "ON"
+    cuda_f16: "ON"
+    native: "ON"
+    parallel_jobs: 6   # nvcc/cicc can SIGSEGV under -j32 on this host
+  targets:
+    - llama-cli
+    - llama-server
+    - llama-mtmd-cli
+
+model:
+  hub_repo: meta-models/Muse-Glimmer-30B-GGUF
+  license: Apache-2.0
+  files:
+    - name: muse-glimmer-30B-kquant-17gb.gguf
+      role: text
+      sha256: 7e9b74b7c8875e9e265695df9613bf6290f2392e479ce740495a129019c488d8
+      approx_size_gb: 16.8
+    - name: mmproj-kquant.gguf
+      role: vision
+      sha256: f48b452316f9b213758e8659444029b961a24a07f99a1abb2a9f88b06f7c00c6
+      approx_size_gb: 1.4
+  optional_not_downloaded:
+    - name: muse-glimmer-30B-kquant-dynamic.gguf
+      reason: "targets ~32GB VRAM; skip on 8GB GPUs"
+  optional_artifacts:
+    - name: dflash-kquant.gguf
+      role: speculative-draft
+      sha256: 27d9a805fa29b943cfb6ad4843367cd4eaaaf06bd452d8cc3e00a2cd18a677bc
+      approx_size_gb: 1.6
+      status_on_rtx4060_8gb: unsupported_oom_when_main_packed
+  community_quants:
+    - hub_repo: unsloth/Muse-Glimmer-30B-GGUF
+      name: Muse-Glimmer-30B-UD-Q3_K_XL.gguf
+      role: text-faster-hybrid
+      sha256: 820d18e00c59376331eba62dd716a6bcdcaa305c2316f5da3a2fab36c7c37e15
+      approx_size_gb: 13.4
+      profile: perf-q3
+      note: "Selected for speed on 8GB; quality below Meta kquant pin"
+
+runtime:
+  alias: muse-glimmer-30B
+  host: 127.0.0.1
+  port: 8080
+  # defaults below describe the fidelity pin; selected_profile overrides at runtime
+  ctx: 8192
+  parallel_slots: 1
+  flash_attn: on
+  cache_type_k: q8_0
+  cache_type_v: q8_0
+  fit: on
+  fit_target_mib: 256
+  fit_ctx_min: 4096
+  batch: 512
+  ubatch: 256
+  temperature: 1.0
+  top_p: 0.95
+  top_k: 64
+  reasoning_strength_default: low
+  load_mode_default: mmap
+  spec_type_default: ngram-mod
+  jinja: true
+  reasoning_preserve: true
+
+host_toolchain_validated:
+  os: "Red Hat Enterprise Linux 10.2"
+  kernel: "6.12.0-211.46.1.el10_2.x86_64"
+  cpu: "Intel Core i9-14900K"
+  ram_gib: 125
+  gpu: "NVIDIA GeForce RTX 4060"
+  vram_mib: 8188
+  driver: "580.173.02"
+  cuda_toolkit: "13.1.80"
+  cmake: "3.31.8"
+  gcc: "14.3.1"
+  python: "3.12.13"
+  huggingface_hub: "1.27.0"
+
+references:
+  blog: https://research.meta.ai/blog/introducing-muse-glimmer-open-agentic-model
+  hf_gguf: https://huggingface.co/meta-models/Muse-Glimmer-30B-GGUF
+  meta_docs: https://dev.meta.ai/docs/muse-glimmer/get-the-model
+  llama_cpp_docs: https://dev.meta.ai/docs/muse-glimmer/llama-cpp

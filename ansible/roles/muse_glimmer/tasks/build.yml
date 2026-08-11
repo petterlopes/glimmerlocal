@@ -1,0 +1,9 @@
+---
+- name: Build llama.cpp via repo script
+  ansible.builtin.command:
+    cmd: "{{ ialocal_repo_root }}/scripts/build-llama-cpp.sh"
+  environment:
+    IALOCAL_ENV_FILE: "{{ ialocal_repo_root }}/config/muse-glimmer.env"
+    PATH: "/usr/local/cuda/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+  register: llama_build
+  changed_when: "'build OK' in llama_build.stdout"

@@ -1,0 +1,15 @@
+---
+ialocal_repo_root: "{{ playbook_dir | dirname | dirname }}"
+ialocal_data: /run/media/petterlopes/SSD930
+ialocal_install_deps: true
+ialocal_build_llama: true
+ialocal_download_model: true
+ialocal_install_systemd_user: false
+ialocal_run_smoke: false
+ialocal_packages:
+  - cmake
+  - gcc-c++
+  - make
+  - git
+  - libcurl-devel
+  - python3-pip

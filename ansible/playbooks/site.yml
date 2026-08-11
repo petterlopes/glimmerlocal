@@ -1,0 +1,10 @@
+---
+# Provision Muse Glimmer local stack (deps → build → model → optional service → smoke)
+- name: glimmerlocal Muse Glimmer
+  hosts: glimmerlocal
+  gather_facts: true
+  vars:
+    ialocal_repo_root: "{{ playbook_dir | dirname | dirname }}"
+  roles:
+    - role: muse_glimmer
+      tags: [muse_glimmer]
