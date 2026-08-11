@@ -14,7 +14,8 @@ vivem **exclusivamente** no repositório privado `peritumct-sec-platform`:
 |------------------------|-------|
 | `docs/governanca/ADR_ACESSO_MUSE_MCP_VIA_NETBIRD.md` | Norma |
 | `docs/implementacao/netbird/ACESSO_MUSE_MCP_WORKSTATION.md` | Runbook |
-| `examples/muse/FOLHA_RAPIDA_MUSE_MCP_NETBIRD.md` | Folha rápida |
-| `examples/muse/muse-netbird-tunnel.sh` | Túnel Muse (8080 only) |
+| `examples/muse/FOLHA_RAPIDA_MUSE_MCP_NETBIRD.md` | Folha rápida Modelo B |
+| `examples/muse/muse-netbird-tunnel.sh` | Túnel fallback (emergência) |
+| URL canónica | `https://muse.peritumctsecops.expertsforensic.com/` |
 
 Uso local do modelo nesta máquina: [GUIA_MUSE.md](GUIA_MUSE.md) · [FOLHA_RAPIDA_MUSE.md](FOLHA_RAPIDA_MUSE.md).

@@ -51,7 +51,7 @@ ARGS=(
   -b 512
   -ub 256
   --load-mode "${LOAD_MODE}"
-  --cors-origins "http://127.0.0.1:${MUSE_PORT},http://localhost:${MUSE_PORT}"
+  --cors-origins "${MUSE_CORS_ORIGINS:-http://127.0.0.1:${MUSE_PORT},http://localhost:${MUSE_PORT}}"
   --no-cors-credentials
   --reasoning-preserve
   --temp 1.0
