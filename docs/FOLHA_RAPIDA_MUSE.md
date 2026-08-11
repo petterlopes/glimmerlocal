@@ -19,13 +19,7 @@ API: `http://127.0.0.1:8080/v1` · model `muse-glimmer-30B`
 
 ## Compartilhar com colega
 
-No laptop dele:
+Procedimentos remotos (NetBird / túneis / MCP) estão **só** no repositório privado `peritumct-sec-platform`.
 
-```bash
-ssh -N -L 8080:127.0.0.1:8080 USUARIO@SUA_WORKSTATION
-# abrir http://127.0.0.1:8080/
-```
+Neste host público: **não** abrir `:8080` em `0.0.0.0` / LAN / overlay.
 
-- Preferir API key se sair de localhost.  
-- **Não** abrir `:8080` na LAN / `0.0.0.0`.  
-- Uma GPU ≈ poucas sessões; ~4–7 t/s nesta máquina.

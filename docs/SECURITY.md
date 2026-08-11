@@ -30,9 +30,11 @@ chmod 600 secrets/api-key
 
 Passe via flag/env no unit systemd (não commitado). Clientes: header `Authorization: Bearer <key>`.
 
-Procedimento completo de **compartilhamento do Muse** (SSH tunnel, API key, o que não fazer):
+API key (opcional, recomendada se o serviço for consumido por mais do que o dono da máquina):
 
-→ [GUIA_MUSE.md](GUIA_MUSE.md) (seção 4)
+→ [GUIA_MUSE.md](GUIA_MUSE.md)
+
+Partilha remota / NetBird / MCP: documentação **apenas** em `peritumct-sec-platform` (repositório privado).
 
 ## Memlock
 

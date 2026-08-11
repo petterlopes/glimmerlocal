@@ -86,15 +86,9 @@ DFlash is downloaded but **not viable** on RTX 4060 8GB with a packed main model
 
 ## MCP e compartilhar o modelo
 
-**Somente Muse (recomendado para quem só precisa do LLM):**
+Uso local do Muse: [GUIA_MUSE.md](GUIA_MUSE.md) · [FOLHA_RAPIDA_MUSE.md](FOLHA_RAPIDA_MUSE.md).
 
-- [GUIA_MUSE.md](GUIA_MUSE.md)
-- [FOLHA_RAPIDA_MUSE.md](FOLHA_RAPIDA_MUSE.md)
-
-Guia combinado (Radar MCP + Muse), se precisar dos dois:
-
-- [GUIA_MCP_E_COMPARTILHAMENTO.md](GUIA_MCP_E_COMPARTILHAMENTO.md)
-- [FOLHA_RAPIDA_MCP_MODELO.md](FOLHA_RAPIDA_MCP_MODELO.md)
+MCP Radar e partilha remota (NetBird): **só** no repositório privado `peritumct-sec-platform` — stub [GUIA_MCP_E_COMPARTILHAMENTO.md](GUIA_MCP_E_COMPARTILHAMENTO.md).
 
 ## Troubleshooting
 
