@@ -20,7 +20,8 @@ Browser / script / IDE  →  http://127.0.0.1:8080  →  llama-server  →  GPU 
 | Health | `GET /health` |
 | Chat API | `POST /v1/chat/completions` |
 | Alias do modelo | `muse-glimmer-30B` |
-| Serviço | `systemctl --user muse-glimmer.service` |
+| Serviço | `systemctl --user muse-glimmer.service` (**on-demand** — não enable no login) |
+| Admin | `./scripts/muse-adminctl.sh` · menu **Muse Glimmer — Administração** |
 | Código / IaC | `peritumct/glimmerlocal/` |
 | Pesos (fora do Git) | `$IALOCAL_DATA/models/...` |
 
@@ -35,29 +36,26 @@ Detalhes de performance: [PERFORMANCE.md](PERFORMANCE.md).
 
 ---
 
-## 2. Subir e verificar
-
-```bash
-# status
-systemctl --user status muse-glimmer.service
-curl -fsS http://127.0.0.1:8080/health
-
-# se estiver parado
-systemctl --user start muse-glimmer.service
-# ou reinstalar a unit
-cd /run/media/petterlopes/SSD930/devsec/peritumct/glimmerlocal
-./scripts/install-systemd-user.sh
-```
-
-Trocar perfil:
+## 2. Subir e verificar (on-demand)
 
 ```bash
 cd /run/media/petterlopes/SSD930/devsec/peritumct/glimmerlocal
-./scripts/restart-with-profile.sh perf-q3    # rápido
-./scripts/restart-with-profile.sh baseline   # qualidade Meta
+./scripts/install-desktop-admin.sh --desktop   # uma vez — menu Admin
+./scripts/muse-adminctl.sh start               # carrega modelo na GPU
+./scripts/muse-adminctl.sh status
+curl -fsS http://100.74.1.232:8080/health      # ver MUSE_HOST em muse-glimmer.env
+./scripts/muse-adminctl.sh stop                # libertar VRAM quando não usar chat
 ```
 
-Abrir no browser: http://127.0.0.1:8080/
+Trocar perfil (e depois `muse-adminctl restart`):
+
+```bash
+cd /run/media/petterlopes/SSD930/devsec/peritumct/glimmerlocal
+cp config/profiles/desktop-ondemand.env config/muse-glimmer.env
+./scripts/muse-adminctl.sh restart
+```
+
+Abrir no browser: `http://$MUSE_HOST:8080/` (Neste host NetBird: http://100.74.1.232:8080/).
 
 ---
 

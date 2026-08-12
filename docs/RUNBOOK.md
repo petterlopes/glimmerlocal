@@ -32,28 +32,35 @@ ansible-playbook -i inventory/hosts.yml playbooks/site.yml
 
 Tags úteis: `--tags deps,build,model,service,smoke`
 
-## Operação diária
+## Operação diária (on-demand)
+
+Por omissão o Muse **não** arranca no login (liberta a RTX 4060 para o desktop).  
+Revisão: [REVISAO_ONDEMAND_RAG_PERF.md](REVISAO_ONDEMAND_RAG_PERF.md).
 
 | Ação | Comando |
 |---|---|
-| Start | `./scripts/start-server.sh` |
-| Stop | `./scripts/stop-server.sh` |
+| Menu Admin | Super → **Muse Glimmer — Administração** |
+| Start / Stop / Restart | `./scripts/muse-adminctl.sh start\|stop\|restart` |
+| Status + VRAM | `./scripts/muse-adminctl.sh status` |
+| Instalar atalho | `./scripts/install-desktop-admin.sh --desktop` |
+| Instalar unit (sem boot) | `./scripts/install-systemd-user.sh` |
+| Start legado (pidfile) | `./scripts/start-server.sh` |
+| Stop legado | `./scripts/stop-server.sh` |
 | Smoke | `./scripts/smoke-test.sh` |
-| Logs | `tail -f ${IALOCAL_DATA}/tools/muse-glimmer/logs/llama-server.log` |
-| Health | `curl -s http://127.0.0.1:8080/health` |
+| Logs systemd | `./scripts/muse-adminctl.sh logs` |
+| Health | `curl -s http://100.74.1.232:8080/health` (ou host em `muse-glimmer.env`) |
 
-### Systemd (user)
+### Systemd (user) — on-demand
 
 ```bash
-mkdir -p ~/.config/systemd/user
-cp systemd/muse-glimmer.service ~/.config/systemd/user/
-# Edite EnvironmentFile= se o path do repo mudar
-systemctl --user daemon-reload
-systemctl --user enable --now muse-glimmer.service
+./scripts/install-systemd-user.sh          # instala unit, disable boot
+./scripts/muse-adminctl.sh start           # só quando for usar chat
+./scripts/muse-adminctl.sh stop            # libertar VRAM
+# Evitar: systemctl --user enable --now muse-glimmer  (consome GPU no login)
 journalctl --user -u muse-glimmer -f
 ```
 
-Requer `loginctl enable-linger $USER` se precisar sobreviver ao logout.
+`loginctl enable-linger $USER` só se precisar de start remoto sem sessão gráfica.
 
 ## Tunáveis
 

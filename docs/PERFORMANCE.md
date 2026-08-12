@@ -71,6 +71,9 @@ Confirm after apply: `docs/perf-results/apply-perf-q3.log` → 6.16 and **13.12*
 MODEL_GGUF=.../Muse-Glimmer-30B-UD-Q3_K_XL.gguf
 MUSE_SPEC_TYPE=ngram-mod
 MUSE_FIT_TARGET=256
+# Em desktop partilhado (GNOME+Brave/Radar), preferir ≥1536 para evitar blocos pretos por VRAM esgotada.
+# Ver: peritumct-sec-platform/docs/implementacao/radar/REVISAO_RENDER_LOCAL_VRAM.md
+
 MUSE_CTX=8192
 MUSE_REASONING=low
 MUSE_REASONING_BUDGET=256

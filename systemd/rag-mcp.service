@@ -1,0 +1,22 @@
+[Unit]
+Description=Peritumct RAG MCP (loopback 127.0.0.1:8091) for Muse UI
+Documentation=file:///run/media/petterlopes/SSD930/devsec/peritumct/glimmerlocal/docs/REVISAO_MCP_RAG_UI.md
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/run/media/petterlopes/SSD930/devsec/peritumct/glimmerlocal
+EnvironmentFile=-/run/media/petterlopes/SSD930/devsec/peritumct/glimmerlocal/config/rag-bridge.env
+EnvironmentFile=-/run/media/petterlopes/SSD930/devsec/peritumct/peritumct-sec-platform/rag/secrets/rag.env
+Environment=RAG_MCP_HOST=127.0.0.1
+Environment=RAG_MCP_PORT=8091
+Environment=PGSSLMODE=disable
+Environment=RAG_EMBED_BACKEND=fastembed
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 /run/media/petterlopes/SSD930/devsec/peritumct/glimmerlocal/scripts/rag_mcp_server.py --host 127.0.0.1 --port 8091 --transport streamable-http
+Restart=on-failure
+RestartSec=3
+# Não enable no login — sobe com muse-adminctl / rag-mcpctl
+
+[Install]
+WantedBy=default.target

@@ -1,51 +1,58 @@
 #!/usr/bin/env bash
-# Install + start Muse Glimmer as a systemd --user service (survives Cursor shell teardown).
+# Instala a unit systemd --user do Muse Glimmer (on-demand por omissão).
+#
+# Uso:
+#   ./scripts/install-systemd-user.sh              # instala unit, SEM enable, SEM start
+#   ./scripts/install-systemd-user.sh --start      # instala + start agora (chat)
+#   ./scripts/install-systemd-user.sh --enable-boot  # NÃO recomendado em desktop partilhado
 set -euo pipefail
-LOG=/run/media/petterlopes/SSD930/devsec/peritumct/glimmerlocal/docs/perf-results/systemd-install.log
-exec >"$LOG" 2>&1
-REPO=/run/media/petterlopes/SSD930/devsec/peritumct/glimmerlocal
+
+REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 UNIT_DIR="${HOME}/.config/systemd/user"
 UNIT="${UNIT_DIR}/muse-glimmer.service"
+DO_START=0
+ENABLE_BOOT=0
 
-echo "=== $(date -Is) ==="
+for arg in "$@"; do
+  case "$arg" in
+    --start) DO_START=1 ;;
+    --enable-boot) ENABLE_BOOT=1 ;;
+    -h|--help) sed -n '2,10p' "$0"; exit 0 ;;
+    *) echo "argumento desconhecido: $arg" >&2; exit 2 ;;
+  esac
+done
+
+echo "=== $(date -Is) install-systemd-user (on-demand) ==="
 mkdir -p "${UNIT_DIR}"
 
-# Ensure active env is perf-q3
-cp "${REPO}/config/profiles/perf-q3.env" "${REPO}/config/muse-glimmer.env"
-chmod 600 "${REPO}/config/muse-glimmer.env"
-
-# Stop any orphan server first
-pkill -9 -f '/tools/llama.cpp/build/bin/llama-server' 2>/dev/null || true
-sleep 2
-rm -f /run/media/petterlopes/SSD930/tools/muse-glimmer/logs/llama-server.pid
+# Preservar muse-glimmer.env se já existir (NetBird host + FIT_TARGET desktop).
+# Só criar a partir do perfil se em falta.
+if [[ ! -f "${REPO}/config/muse-glimmer.env" ]]; then
+  if [[ -f "${REPO}/config/profiles/desktop-ondemand.env" ]]; then
+    cp "${REPO}/config/profiles/desktop-ondemand.env" "${REPO}/config/muse-glimmer.env"
+  else
+    cp "${REPO}/config/profiles/perf-q3.env" "${REPO}/config/muse-glimmer.env"
+  fi
+  chmod 600 "${REPO}/config/muse-glimmer.env"
+  echo "criado config/muse-glimmer.env"
+else
+  echo "mantido config/muse-glimmer.env existente (não sobrescrito)"
+fi
 
 install -m 0644 "${REPO}/systemd/muse-glimmer.service" "${UNIT}"
-# Prefer EnvironmentFile from repo (already in unit)
 systemctl --user daemon-reload
-systemctl --user enable muse-glimmer.service
-systemctl --user restart muse-glimmer.service
 
-# linger so it survives logout (best-effort)
-loginctl enable-linger "$(whoami)" 2>/dev/null || true
+if [[ "$ENABLE_BOOT" == "1" ]]; then
+  systemctl --user enable muse-glimmer.service
+  echo "AVISO: autostart no login ACTIVADO — consome VRAM ao arrancar a sessão"
+else
+  systemctl --user disable muse-glimmer.service 2>/dev/null || true
+  echo "boot: disabled (on-demand — use muse-adminctl / menu Admin)"
+fi
 
-for i in $(seq 1 90); do
-  if curl -fsS http://127.0.0.1:8080/health >/dev/null 2>&1; then
-    echo "health ok after ${i}s"
-    systemctl --user --no-pager status muse-glimmer.service | head -20
-    curl -fsS http://127.0.0.1:8080/health; echo
-    nvidia-smi --query-gpu=memory.used,memory.free --format=csv,noheader || true
-    echo SUCCESS
-    exit 0
-  fi
-  if ! systemctl --user is-active --quiet muse-glimmer.service; then
-    echo "service not active"
-    systemctl --user --no-pager status muse-glimmer.service || true
-    journalctl --user -u muse-glimmer -n 40 --no-pager || true
-    exit 1
-  fi
-  sleep 1
-done
-echo TIMEOUT
-systemctl --user --no-pager status muse-glimmer.service || true
-journalctl --user -u muse-glimmer -n 40 --no-pager || true
-exit 1
+if [[ "$DO_START" == "1" ]]; then
+  exec bash "${REPO}/scripts/muse-adminctl.sh" start
+fi
+
+echo "OK: unit em ${UNIT}"
+echo "Chat: ./scripts/muse-adminctl.sh start   |   menu: ./scripts/install-desktop-admin.sh"

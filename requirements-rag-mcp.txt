@@ -1,0 +1,7 @@
+# Dependências do MCP RAG (streamable-http) — instalar no user/venv do operador:
+#   python3 -m pip install --user 'mcp>=1.0' 'uvicorn' 'starlette' 'psycopg[binary]'
+# Embeddings: fastembed (já usado pelo rag da plataforma)
+mcp>=1.0
+uvicorn>=0.30
+starlette>=0.37
+psycopg[binary]>=3.2

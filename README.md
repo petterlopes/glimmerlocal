@@ -12,9 +12,9 @@ Este diretório é o artefato versionável. Pesos GGUF e o build de `llama.cpp` 
 |---|---|
 | Docs | Arquitetura, runbook, segurança, perfil de hardware |
 | Pins | Commit `llama.cpp`, artefatos HF, SHA-256 |
-| Scripts | Bootstrap, build CUDA, download, start/stop, smoke |
+| Scripts | Bootstrap, build CUDA, download, **admin on-demand**, smoke |
 | Ansible | Playbook idempotente de deps + runtime + modelo + systemd |
-| Systemd | Unidade user-level opcional (`127.0.0.1` only) |
+| Systemd | Unidade user-level **on-demand** (sem enable no login) |
 
 ## Quick start
 
@@ -26,8 +26,24 @@ cp config/muse-glimmer.env.example config/muse-glimmer.env
 ./scripts/bootstrap.sh          # deps + venv hf + dirs
 ./scripts/build-llama-cpp.sh    # llama.cpp CUDA (pin em config/pins.yml)
 ./scripts/download-model.sh     # GGUF oficial + verify SHA-256
-./scripts/start-server.sh
+./scripts/install-systemd-user.sh       # unit sem autostart
+./scripts/install-desktop-admin.sh --desktop
+./scripts/muse-adminctl.sh start        # só ao usar chat
 ./scripts/smoke-test.sh
+./scripts/muse-adminctl.sh stop         # libertar VRAM
+
+## RAG → Muse (plataforma)
+
+Postgres RAG permanece em `peritumct-sec-platform/rag/` (cgroup 8 GiB). O glimmerlocal só faz bridge:
+
+```bash
+./scripts/rag-status.sh
+./scripts/rag-chat.sh --ensure-muse -q "What are Privacy by Design foundational principles?"
+# UI Muse: ./scripts/muse-adminctl.sh start → MCP Servers → peritumct-rag
+# Detalhe: docs/REVISAO_MCP_RAG_UI.md
+```
+
+Doc: [docs/INTEGRACAO_RAG.md](docs/INTEGRACAO_RAG.md).
 ```
 
 Ou via Ansible (mesmo host):

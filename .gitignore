@@ -1,5 +1,6 @@
 # Local secrets / env (never commit)
 config/muse-glimmer.env
+config/rag-bridge.env
 secrets/
 *.pem
 *.key

@@ -1,8 +1,10 @@
 [Unit]
-Description=Muse Glimmer 30B (llama-server localhost) — PeritumCT glimmerlocal
+Description=Muse Glimmer 30B (llama-server) — PeritumCT glimmerlocal (on-demand)
 Documentation=file:///run/media/petterlopes/SSD930/devsec/peritumct/glimmerlocal/docs/RUNBOOK.md
+Documentation=file:///run/media/petterlopes/SSD930/devsec/peritumct/glimmerlocal/docs/REVISAO_ONDEMAND_RAG_PERF.md
 After=network-online.target
 Wants=network-online.target
+# Não enable no login: usar scripts/muse-adminctl.sh ou «Muse Glimmer Admin».
 
 [Service]
 Type=simple
@@ -17,4 +19,5 @@ LimitMEMLOCK=infinity
 OOMScoreAdjust=-200
 
 [Install]
+# WantedBy presente para quem optar por --enable-boot; omissão recomendada = disable
 WantedBy=default.target

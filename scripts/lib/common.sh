@@ -38,6 +38,10 @@ ialocal_load_env() {
   export MUSE_REASONING_BUDGET="${MUSE_REASONING_BUDGET:--1}"
   export MUSE_PRIO="${MUSE_PRIO:-0}"
   export LLAMA_BUILD_JOBS="${LLAMA_BUILD_JOBS:-6}"
+  # MCP RAG (UI): proxy CORS + config com peritumct-rag em 127.0.0.1:8091
+  export MUSE_UI_MCP_PROXY="${MUSE_UI_MCP_PROXY:-1}"
+  export MUSE_UI_CONFIG_FILE="${MUSE_UI_CONFIG_FILE:-${IALOCAL_REPO_ROOT}/config/muse-ui.json}"
+  export MUSE_RAG_MCP_AUTOSTART="${MUSE_RAG_MCP_AUTOSTART:-1}"
 
   export IALOCAL_TOOLS="${IALOCAL_DATA}/tools"
   export IALOCAL_MODELS="${IALOCAL_DATA}/models"
@@ -99,6 +103,14 @@ ialocal_build_extra_args() {
     EXTRA_ARGS+=(--model-draft "${DFLASH_GGUF}")
     EXTRA_ARGS+=(--spec-draft-n-max "${MUSE_DRAFT_N_MAX}")
     EXTRA_ARGS+=(-ngld "${MUSE_DRAFT_NGL:-0}")
+  fi
+
+  # UI MCP (RAG local) — só loopback; proxy no llama-server para CORS do browser
+  if [[ "${MUSE_UI_MCP_PROXY:-1}" == "1" ]]; then
+    EXTRA_ARGS+=(--ui-mcp-proxy)
+  fi
+  if [[ -n "${MUSE_UI_CONFIG_FILE:-}" && -f "${MUSE_UI_CONFIG_FILE}" ]]; then
+    EXTRA_ARGS+=(--ui-config-file "${MUSE_UI_CONFIG_FILE}")
   fi
 }
 
